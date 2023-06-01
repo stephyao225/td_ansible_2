@@ -1,0 +1,21 @@
+- name: Configuration du serveur DHCP sur le routeur Cisco
+  hosts: csr1000
+  gather_facts: false
+
+
+  tasks:
+    - name: Configuration du serveur DHCP
+      cisco.ios.ios_config:
+        lines:
+          - ip dhcp pool POOL2
+          - network 192.168.2.0 255.255.255.0
+          - default-router 192.168.2.1
+          - dns-server 8.8.8.8
+          - lease 7
+        parents: interface Gigabit2
+      register: dhcp_config
+
+    - name: Vérification de la configuration
+      debug:
+        var:
+          dhcp_config
